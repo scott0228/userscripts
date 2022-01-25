@@ -2,7 +2,7 @@
 // @name         簡繁轉換
 // @namespace    https://scott0228.blogspot.com/
 // @version      0.1
-// @description  簡體直接轉繁體啦, AJAX 進來的內容也會進行轉換
+// @description  簡體直接轉繁體啦，AJAX 進來的內容也會進行轉換，主要是拿 同文堂的 bookmarklete_tw.js 來處理，加上 document.addEventListener("DOMNodeInserted", convert_trad, true); 讓 dom 有變化的時候再次進行轉換
 // @author       Scott Yang
 // @include      *.*
 // ==/UserScript==
