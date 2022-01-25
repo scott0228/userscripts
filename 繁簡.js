@@ -2,7 +2,7 @@
 // @name         簡繁轉換
 // @namespace    https://scott0228.blogspot.com/
 // @version      0.1
-// @description  簡體直接轉繁體啦
+// @description  簡體直接轉繁體啦, AJAX 進來的內容也會進行轉換
 // @author       Scott Yang
 // @include      *.*
 // ==/UserScript==
