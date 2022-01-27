@@ -2,9 +2,10 @@
 // @name         簡繁轉換
 // @namespace    https://scott0228.blogspot.com/
 // @version      0.1
-// @description  簡體直接轉繁體啦，AJAX 進來的內容也會進行轉換，主要是拿 同文堂的 bookmarklete_tw.js 來處理，加上 document.addEventListener("DOMNodeInserted", convert_trad, true); 讓 dom 有變化的時候再次進行轉換
+// @description  簡體直接轉繁體啦
 // @author       Scott Yang
 // @include      *.*
+// @exclude      https://fugle.tw/
 // ==/UserScript==
 var TongWen = {};
 TongWen.s_2_t = {
@@ -2550,20 +2551,26 @@ TongWen.s_2_t = {
 function toTrad(itxt){
 	var zhmap = TongWen.s_2_t;
 
-	itxt = itxt.replace(/[^\x00-\xFF]/g,  function(s){
+	itxt = itxt.replace(/[^\x00-\xFF]/g, function(s){
 			return ((s in zhmap)?zhmap[s]:s);
 		}
 	);
 	return 	itxt;
 }
 
-function convert_trad(){
+function convert_trad(event){
 	var curDoc = window.document;
+    if (event) {
+        var textNode = event.target;
+        if (textNode.textContent == '') {
+            return
+        }
+    }
 	if (curDoc.evaluate){
 		//var xpr = '//text()[string-length(normalize-space(.))>0][name(..)!="SCRIPT"][name(..)!="STYLE"]';
 		var xpr = '//text()[normalize-space(.)][name(..)!="SCRIPT"][name(..)!="STYLE"]';
 
-		var textnodes = curDoc.evaluate(xpr, curDoc,  null, XPathResult.UNORDERED_NODE_SNAPSHOT_TYPE,  null);
+		var textnodes = curDoc.evaluate(xpr, curDoc, null, XPathResult.UNORDERED_NODE_SNAPSHOT_TYPE, null);
 		var textnodes_length = textnodes.snapshotLength;
 		//var curNode = null;
 
