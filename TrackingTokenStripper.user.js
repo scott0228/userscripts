@@ -1,107 +1,81 @@
 // ==UserScript==
 // @name         TrackingTokenStripper
-// @version      1.3
+// @version      1.0
 // @description  Remove most of the annoying tracking token from URL parameters
 // @license      MIT
-// @homepage     https://blog.miniasp.com/
-// @homepageURL  https://blog.miniasp.com/
-// @website      https://www.facebook.com/will.fans
-// @source       https://github.com/doggy8088/TrackingTokenStripper
-// @namespace    https://github.com/doggy8088/TrackingTokenStripper
-// @author       Will Huang
+// @homepage     https://scott0228.blogspot.com/
+// @homepageURL  https://scott0228.blogspot.com/
+// @website      https://scott0228.blogspot.com/
+// @source       https://github.com/scott0228/userscripts
+// @namespace    
+// @author       Scott Yang
 // @match        *://*/*
 // @run-at       document-start
 // ==/UserScript==
 
+// 參考： 
+// https://lukabratos.me/2020/05/08/removing-utm-parameters-with-apples-shortcuts/
+// https://github.com/doggy8088/TrackingTokenStripper
 (function() {
-
-    var s = TrackingTokenStripper(location.href)
-        .remove('fbclid')
-        .remove('utm_source')
-        .remove('utm_medium')
-        .remove('utm_term')
-        .remove('utm_campaign')
-        .remove('utm_content')
-        .remove('utm_cid')
-        .remove('utm_reader')
-        .remove('utm_referrer')
-        .remove('utm_name')
-        .remove('utm_social')
-        .remove('utm_social-type')
-        .remove('gclid')
-        .remove('igshid')
-        .remove('_hsenc')
-        .remove('_hsmi')
-        .remove('mc_cid')
-        .remove('mc_eid')
-        .remove('mkt_tok')
-        .remove('yclid')
-        .remove('_openstat')
-
-        .remove('wt.mc_id')
-        .remove('__tn__')
-        .remove('gclsrc')
-        .remove('itm_source')
-        .remove('itm_medium')
-        .remove('itm_campaign')
-        .remove('mc') // sendgrid.com
-        .remove('mcd') // sendgrid.com
-        .remove('cvosrc') // sendgrid.com
-        .remove('cr_cc') // https://blogs.microsoft.com/
-
-        .remove('sc_channel')
-        .remove('sc_campaign')
-        .remove('sc_geo')
-        .remove('trk')
-        .remove('sc_publisher')
-        .remove('trkCampaign')
-        .remove('sc_outcome')
-        .remove('sc_country')
-
-        .remove('__hstc')
-        .remove('__hssc')
-        .remove('__hsfp')
-        .remove('_gl')
-
-        .toString();
-
-    if (s && location.href !== s) {
-        location.href = s;
-        // console.log(s); alert(s);
+    const params = new URLSearchParams(location.search)
+    const utm_params = [
+        'fbclid',
+        'utm_source',
+        'utm_medium',
+        'utm_term',
+        'utm_campaign',
+        'utm_content',
+        'utm_cid',
+        'utm_reader',
+        'utm_referrer',
+        'utm_name',
+        'utm_social',
+        'utm_social-type',
+        'gclid',
+        'igshid',
+        '_hsenc',
+        '_hsmi',
+        'mc_cid',
+        'mc_eid',
+        'mkt_tok',
+        'yclid',
+        '_openstat',
+        'wt.mc_id',
+        '__tn__',
+        'gclsrc',
+        'itm_source',
+        'itm_medium',
+        'itm_campaign',
+        'mc', // sendgrid.com
+        'mcd', // sendgrid.com
+        'cvosrc', // sendgrid.com
+        'cr_cc', // https://blogs.microsoft.com/
+        'sc_channel',
+        'sc_campaign',
+        'sc_geo',
+        'trk',
+        'sc_publisher',
+        'trkCampaign',
+        'sc_outcome',
+        'sc_country',
+        '__hstc',
+        '__hssc',
+        '__hsfp',
+        '_gl'
+    ]
+    
+    utm_params.forEach(item => {
+      if (params.has(item) === true) {
+        params.delete(item)
+      }
+    });
+    
+    var newUrl = `${location.origin}${location.pathname}`;
+    if (Array.from(params).length > 0) {
+        newUrl = `${newUrl}?${params}`
     }
 
-    function TrackingTokenStripper(url) {
-        return {
-            remove(name) {
-                var [path, ...other] = url.split('?');
-                other = other.join('?');
-
-                var [query, ...hash] = other ? other.split('#') : [query, ''];
-                hash = hash.join('#');
-
-                if (query) {
-                    let new_query = [];
-                    for (let param of query.split('&')) {
-                        let [key, val] = param.split('=', 2);
-                        if (key !== name) {
-                            new_query.push(param);
-                        }
-                    }
-                    query = new_query.join('&');
-                }
-
-                query = query ? query = '?' + query : '';
-                hash = hash ? hash = '#' + hash : '';
-
-                if (url.substr(url.length - 1) == '#') {
-                    hash = '#';
-                }
-
-                return TrackingTokenStripper(path + query + hash);
-            },
-            toString() {
-                return url;
-            }
-        }
+    if (newUrl && location.href !== newUrl) {
+        location.href = newUrl;
     }
 })();
