@@ -7,18 +7,19 @@
 // @homepageURL  https://scott0228.blogspot.com/
 // @website      https://scott0228.blogspot.com/
 // @source       https://github.com/scott0228/userscripts
-// @namespace    
+// @namespace
 // @author       Scott Yang
 // @match        *://*/*
 // @run-at       document-start
 // ==/UserScript==
 
-// 參考： 
+// 參考：
 // https://lukabratos.me/2020/05/08/removing-utm-parameters-with-apples-shortcuts/
 // https://github.com/doggy8088/TrackingTokenStripper
 (function() {
     const params = new URLSearchParams(location.search)
     const utm_params = [
+        'liff.referrer',
         'fbclid',
         'utm_source',
         'utm_medium',
@@ -63,13 +64,13 @@
         '__hsfp',
         '_gl'
     ]
-    
+
     utm_params.forEach(item => {
       if (params.has(item) === true) {
         params.delete(item)
       }
     });
-    
+
     var newUrl = `${location.origin}${location.pathname}`;
     if (Array.from(params).length > 0) {
         newUrl = `${newUrl}?${params}`
