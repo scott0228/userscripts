@@ -2557,14 +2557,8 @@ function toTrad(itxt){
 	return 	itxt;
 }
 
-function convert_trad(event){
+function convert_trad(){
 	var curDoc = window.document;
-    if (event) {
-        var textNode = event.target;
-        if (textNode.textContent == '') {
-            return
-        }
-    }
 	if (curDoc.evaluate){
 		//var xpr = '//text()[string-length(normalize-space(.))>0][name(..)!="SCRIPT"][name(..)!="STYLE"]';
 		var xpr = '//text()[normalize-space(.)][name(..)!="SCRIPT"][name(..)!="STYLE"]';
@@ -2589,5 +2583,23 @@ function convert_trad(event){
 (function() {
     'use strict';
     convert_trad();
-    document.addEventListener("DOMNodeInserted", convert_trad, true);
+
+    const callback = (mutationsList) => {
+        mutationsList.forEach(mutation => {
+            observer.disconnect(); // turn observer off;
+            if (mutation.type == 'childList' && mutation.addedNodes.length > 0) {
+                Array.from(mutation.addedNodes).find((node) => {
+                    var treeWalker = document.createTreeWalker(node, NodeFilter.SHOW_TEXT);
+                    var textNode;
+
+                    while (textNode = treeWalker.nextNode()) {
+                        textNode.nodeValue = toTrad(textNode.nodeValue);
+                    }
+                })
+            }
+            observer.observe(document.body,{childList:true,subtree:true}) // turn back on
+        });
+    }
+    const observer = new MutationObserver(callback)
+    observer.observe(document.body,{childList:true,subtree:true})
 })();
